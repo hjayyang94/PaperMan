@@ -8,6 +8,7 @@ public class Swipe : MonoBehaviour {
     public Vector2 startTouch, swipeDelta;
 
     private bool isDragging;
+    private Vector2 touchOrigin = -Vector2.one;
 
 	// Use this for initialization
 	
@@ -33,8 +34,23 @@ public class Swipe : MonoBehaviour {
         }
 
         //Mobile Inputs
-        if (Input.touches.Length > 0)
+        if (Input.touchCount > 0)
         {
+            Touch myTouch = Input.touches[0];
+
+            if (myTouch.phase == TouchPhase.Began)
+            {
+                touchOrigin = myTouch.position;
+            }
+
+            else if (myTouch.phase == TouchPhase.Ended && touchOrigin.x >= 0)
+            {
+                Vector2 touchEnd = myTouch.position;
+                float x = touchEnd.x - touchOrigin.x;
+                touchOrigin.x = -1;
+            }
+
+
             if(Input.touches[0].phase == TouchPhase.Began)
             {
                 tap = true;
@@ -67,7 +83,17 @@ public class Swipe : MonoBehaviour {
         {
             //Which direction?
 
-            float x - s
+            float x = swipeDelta.x;
+
+            if (x < 0)
+            {
+                swipeLeft = true;
+            }
+
+            else
+            {
+                swipeRight = true;
+            }
 
             Reset();
         }
@@ -77,5 +103,6 @@ public class Swipe : MonoBehaviour {
     {
         startTouch = Vector2.zero;
         swipeDelta = Vector2.zero;
+        isDragging = false;
     }
 }
